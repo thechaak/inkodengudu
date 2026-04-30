@@ -169,19 +169,21 @@
             <div class="w-full border-t border-b border-gray-100 flex flex-col">
                 
                 <!-- Account 1 -->
-                <div onclick="selectAccount()" class="flex items-center justify-between px-6 py-4 border-b border-gray-100 active:bg-gray-50 transition cursor-pointer">
+                <div id="account-row-1" onclick="selectAccount()" class="flex items-center justify-between px-6 py-4 border-b border-gray-100 active:bg-gray-50 transition cursor-pointer">
                     <div class="flex items-center gap-4">
                         <div class="w-[42px] h-[42px] rounded-full bg-[#f3f4f6] flex items-center justify-center text-black font-medium text-[16px]">
                             N
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-[17px] text-black font-medium tracking-tight">nagalakshminaagulapalli@gmail.com</span>
-                            <span class="text-[14px] text-gray-400 mt-0.5">Last signed in 29 April 2026</span>
+                            <span class="text-[17px] text-black font-medium tracking-tight">nagalakshminagulapalli@gmail.com</span>
+                            <span class="text-[14px] text-gray-400 mt-0.5">Last signed in 29 Apr 2026</span>
                         </div>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
+                    <div id="account-icon-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
                 </div>
 
                 <!-- Account 2 (Use a different user ID) -->
@@ -269,16 +271,80 @@
             }, 400);
         }
 
-        // Select Account Interaction (Triggers the Error Box after 1 second)
+        let isProcessing = false;
+
+        // Select Account Interaction (Triggers loading state, then Error Box after 1 second)
         function selectAccount() {
-            // Optional: You could add a quick loading spinner here, but we will simply wait 1s.
+            if (isProcessing) return; // Prevent multiple rapid clicks
+            isProcessing = true;
+
+            const accountRow = document.getElementById('account-row-1');
+            const accountIcon = document.getElementById('account-icon-1');
+            
+            // Hide error box if it was already open (from a previous click)
+            errorBox.classList.add('translate-y-[-10px]', 'opacity-0');
+            setTimeout(() => errorBox.classList.add('hidden'), 300);
+
+            // Highlight the row in grey
+            accountRow.classList.add('bg-gray-100');
+            
+            // Save original chevron
+            const originalChevron = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            `;
+
+            // Replace chevron with Apple iOS style loading spinner
+            accountIcon.innerHTML = `
+                <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <style>
+                        .spinner_iOS rect { animation: spinner_iOS_anim 1.2s linear infinite; rx: 1px; ry: 1px; }
+                        .spinner_iOS rect:nth-child(1) { animation-delay: -1.2s; transform: rotate(0deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(2) { animation-delay: -1.1s; transform: rotate(30deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(3) { animation-delay: -1.0s; transform: rotate(60deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(4) { animation-delay: -0.9s; transform: rotate(90deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(5) { animation-delay: -0.8s; transform: rotate(120deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(6) { animation-delay: -0.7s; transform: rotate(150deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(7) { animation-delay: -0.6s; transform: rotate(180deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(8) { animation-delay: -0.5s; transform: rotate(210deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(9) { animation-delay: -0.4s; transform: rotate(240deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(10) { animation-delay: -0.3s; transform: rotate(270deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(11) { animation-delay: -0.2s; transform: rotate(300deg) translate(8px); }
+                        .spinner_iOS rect:nth-child(12) { animation-delay: -0.1s; transform: rotate(330deg) translate(8px); }
+                        @keyframes spinner_iOS_anim { 0% { opacity: 1; } 100% { opacity: 0.15; } }
+                    </style>
+                    <g class="spinner_iOS" transform="translate(12, 12)">
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                        <rect x="-1" y="-3" width="2" height="6" />
+                    </g>
+                </svg>
+            `;
+
+            // Wait 1 second
             setTimeout(() => {
+                // Show the error box
                 errorBox.classList.remove('hidden');
                 
                 // Allow browser reflow before sliding down
                 requestAnimationFrame(() => {
                     errorBox.classList.remove('translate-y-[-10px]', 'opacity-0');
                 });
+
+                // Revert highlight and loading spinner
+                accountRow.classList.remove('bg-gray-100');
+                accountIcon.innerHTML = originalChevron;
+                isProcessing = false;
             }, 1000);
         }
     </script>
